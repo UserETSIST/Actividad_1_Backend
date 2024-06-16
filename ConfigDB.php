@@ -18,15 +18,16 @@
             return $this->conn;
         }
     }
-    $database = new databaseConnect();
-    $conn = $database->getConnection();
+    
+    // $database = new databaseConnect();
+    // $conn = $database->getConnection();
 
-    // Verifica la conexión
-    if ($conn) {
-        echo "Successful database connection!";
-    } else {
-        echo " <br> Error al conectar a la base de datos.";
-    }
+    // // Verifica la conexión
+    // if ($conn) {
+    //     echo "Successful database connection!";
+    // } else {
+    //     echo " <br> Error al conectar a la base de datos.";
+    // }
     
     
     
