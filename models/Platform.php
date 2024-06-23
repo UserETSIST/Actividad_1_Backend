@@ -6,7 +6,7 @@
         private $id;
         private $name;
 
-        public function __construct($id, $name)
+        public function __construct($id,$name)
         {
             $this->id = $id;
             $this->name = $name;
@@ -16,11 +16,11 @@
             echo "Entro en ". __FUNCTION__;
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
-            $query = $mysqli->query("SELECT * FROM plataformas");
+            $query = $mysqli->query("SELECT * FROM plataformas WHERE Activo = '1'");
             $listData = [];
 
             foreach($query as $item) {
-                $itemObject = new Platform($item['ID'],$item['Nombre']);
+                $itemObject = new Platform($item['ID'],$item['Nombre'],$item['Activo']);
                 array_push($listData,$itemObject);
             }
 
@@ -33,10 +33,10 @@
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
             $itemObject = null;
-            $query = $mysqli->query("SELECT * FROM plataformas WHERE ID = $platformId ");
+            $query = $mysqli->query("SELECT * FROM plataformas WHERE ID = $platformId AND Activo = '1'");
             if($query->rowCount() > 0){
                 foreach ($query as $item) {
-                    $itemObject = new Platform($item['ID'],$item['Nombre']);
+                    $itemObject = new Platform($item['ID'],$item['Nombre'],$item['Activo']);
                     break;                
                 }
             }
@@ -56,13 +56,16 @@
             
             foreach($nombresPlataformas as $nombre) {
                 if (strtolower($nombre[0]) === strtolower($name)) {
-                         $insertNuevaPlataforma = false;
+                    if ($mysqli -> query("UPDATE plataformas set Activo = '1' WHERE Nombre = '$name'")){
+                        $platformCreated = true;
+                    }
+                        $insertNuevaPlataforma = false;
                         break;
                         }
             }
 
             if ($insertNuevaPlataforma) {
-                if ($mysqli -> query("INSERT INTO plataformas (Nombre) VALUES ('$name')")){
+                if ($mysqli -> query("INSERT INTO plataformas (Nombre,Activo) VALUES ('$name',1)")){
                     $platformCreated = true;
                 }
             }    
@@ -79,7 +82,7 @@
             $mysqli = $mysqliObject->getConnection();
             $updateNuevaPlataforma = true;
 
-            $nombresPlataformas = $mysqli->query("SELECT * FROM plataformas");
+            $nombresPlataformas = $mysqli->query("SELECT * FROM plataformas WHERE Activo = '1'");
             
             foreach($nombresPlataformas as $nombre) {
                 if (strtolower($nombre['Nombre']) === strtolower($name)) {
@@ -101,7 +104,7 @@
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
             $platformDeleted = false;
-            if($mysqli->query("DELETE FROM plataformas WHERE ID = $platformId ")){
+            if($mysqli->query("UPDATE plataformas set Activo = '0' WHERE ID = $platformId")){
                     $platformDeleted = true;
             }
             return $platformDeleted; 
@@ -149,5 +152,9 @@
 
             return $this;
         }
+
+      
+
+
     }
 ?>

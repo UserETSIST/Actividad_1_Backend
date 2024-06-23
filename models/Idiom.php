@@ -1,13 +1,13 @@
 <?php
     require_once('../ConfigDB.php');
 
-    class Idiomas
+    class Idiom
     {
         private $id;
         private $name;
         private $isoCode;
 
-        public function __construct($id, $name,$isoCode)
+        public function __construct($id, $name, $isoCode)
         {
             $this->id = $id;
             $this->name = $name;
@@ -18,11 +18,11 @@
             echo "Entro en ". __FUNCTION__;
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
-            $query = $mysqli->query("SELECT * FROM idiomas");
+            $query = $mysqli->query("SELECT * FROM idiomas WHERE Activo = '1'");
             $listData = [];
 
             foreach($query as $item) {
-                $itemObject = new Idiomas($item['ID'],$item['Nombre'], $item["ISOCode"]);
+                $itemObject = new Idiom($item['ID'],$item['Nombre'], $item["ISOCode"],$item['Activo']);
                 array_push($listData,$itemObject);
             }
 
@@ -35,10 +35,10 @@
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
             $itemObject = null;
-            $query = $mysqli->query("SELECT * FROM idiomas WHERE ID = $idomId ");
+            $query = $mysqli->query("SELECT * FROM idiomas WHERE ID = $idomId AND Activo = '1' ");
             if($query->rowCount() > 0){
                 foreach ($query as $item) {
-                    $itemObject = new Idiomas($item['ID'],$item['Nombre'],$item["ISOCode"]);
+                    $itemObject = new Idiom($item['ID'],$item['nombre'],$item["ISOCode"],$item['Activo']);
                     break;                
                 }
             }
@@ -49,22 +49,26 @@
 
         public static function store($name,$isoCode) {
             echo "Entro en ". __FUNCTION__;
+            echo $name."    ".$isoCode;
             $idiomCreated = false;
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
             $insertNewIdiom = true;
 
-            $idoms = $mysqli->query("SELECT Nombre FROM idiomas");
-            
-            foreach($idoms as $idiom) {
-                if (strtolower($idiom['nombre']) === strtolower($name)) {
-                         $insertNewIdiom = false;
-                        break;
-                        }
+            $idioms = $mysqli->query("SELECT * FROM idiomas");
+            // echo "<br>";
+            foreach($idioms as $idiom) {
+                // echo "Comparo Nombre: ".$idiom['nombre']."<->".$name." ISO:".$idiom['ISOCode']."<->".$isoCode."<br>";
+                if((strtolower($idiom['ISOCode']) === strtolower($isoCode)) or (strtolower($idiom['nombre']) === strtolower($name))){
+                    $insertNewIdiom = false;
+                    break;
+                }
             }
-
+            // var_dump($insertNewIdiom);
+            // exit();
             if ($insertNewIdiom) {
-                if ($mysqli -> query("INSERT INTO idiomas (Nombre,ISOCode) VALUES ('$name','$isoCode')")){
+                $isoCode=strtoupper($isoCode);
+                if ($mysqli -> query("INSERT INTO idiomas (nombre,ISOCode,Activo) VALUES ('$name','$isoCode','1')")){
                     $idiomCreated = true;
                 }
             }    
@@ -79,19 +83,19 @@
             $idiomUpdated = false;
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
-            $updateNuevaPlataforma = true;
+            $updateNewIdiom = true;
 
-            $nombresPlataformas = $mysqli->query("SELECT * FROM plataformas");
+            $idioms = $mysqli->query("SELECT * FROM idiomas WHERE Activo = '1'");
             
-            foreach($nombresPlataformas as $nombre) {
-                if (strtolower($nombre['Nombre']) === strtolower($name)) {
-                         $updateNuevaPlataforma = false;
+            foreach($idioms as $idiom) {
+                if (strtolower($idiom['nombre']) === strtolower($name) or (strtolower($idiom['ISOCode']) === strtolower($isoCode))) {
+                         $updateNewIdiom = false;
                          break;
                         }
             }
 
-            if ($updateNuevaPlataforma) {
-                if ($mysqli -> query("UPDATE idiomas set Nombre = '$name' where id = $idiomId")){
+            if ($updateNewIdiom) {
+                if ($mysqli -> query("UPDATE idiomas set nombre = '$name', ISOCode = '$isoCode' where id = $idiomId")){
                     $idiomUpdated = true;
                 }
             }    
@@ -103,7 +107,7 @@
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
             $platformDeleted = false;
-            if($mysqli->query("DELETE FROM plataformas WHERE ID = $platformId ")){
+            if($mysqli->query("UPDATE idiomas set Activo = '0' WHERE ID = $platformId ")){
                     $platformDeleted = true;
             }
             return $platformDeleted; 
@@ -148,6 +152,25 @@
         public function setName($name)
         {
             $this->name = $name;
+
+            return $this;
+        }
+
+
+
+        public function getISO()
+        {
+            return $this->isoCode;
+        }
+
+        /**
+         * Set the value of name
+         *
+         * @return  self
+         */ 
+        public function setSISO($iso)
+        {
+            $this->isoCode = $iso;
 
             return $this;
         }

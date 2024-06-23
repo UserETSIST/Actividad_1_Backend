@@ -40,6 +40,7 @@
                     <input type="hidden" name="platformId" value="<?php echo $idPlatform; ?>"/>
                 </div>
                 <input type="submit" value="Editar" class="btn btn-primary" name="editBtn"/>
+                <a class="btn btn-danger" href="list_platforms.php">Cancelar</a>
             </form>
         </div>
     </div>  
