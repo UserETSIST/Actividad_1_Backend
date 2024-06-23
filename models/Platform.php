@@ -13,6 +13,7 @@
         }
 
         public static function getAll() {
+            echo "Entro en ". __FUNCTION__;
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
             $query = $mysqli->query("SELECT * FROM plataformas");
@@ -28,24 +29,24 @@
 
 
         public static function getItem($platformId) {
+            echo "Entro en ". __FUNCTION__;
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
             $itemObject = null;
             $query = $mysqli->query("SELECT * FROM plataformas WHERE ID = $platformId ");
-
-            if($query != null){
+            if($query->rowCount() > 0){
                 foreach ($query as $item) {
                     $itemObject = new Platform($item['ID'],$item['Nombre']);
                     break;                
                 }
             }
-
             return $itemObject;   
         }
 
 
 
         public static function store($name) {
+            echo "Entro en ". __FUNCTION__;
             $platformCreated = false;
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
@@ -72,6 +73,7 @@
 
 
         public static function update($platformId,$name) {
+            echo "Entro en ". __FUNCTION__; 
             $platformUpdated = false;
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
@@ -93,6 +95,19 @@
             }    
             return $platformUpdated;
         }
+
+        public static function delete($platformId) {
+            echo "Entro en ". __FUNCTION__;
+            $mysqliObject = new databaseConnect();
+            $mysqli = $mysqliObject->getConnection();
+            $platformDeleted = false;
+            if($mysqli->query("DELETE FROM plataformas WHERE ID = $platformId ")){
+                    $platformDeleted = true;
+            }
+            return $platformDeleted; 
+
+        }
+
 
 
         /**

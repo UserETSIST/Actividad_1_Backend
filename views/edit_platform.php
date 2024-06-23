@@ -21,7 +21,7 @@
         $sendData = true;
     }
     if($sendData) {
-        if(isset($_POST['platformName'])) {
+        if(isset($_POST['platformName']) && $platformObject != NULL) {
             $platformEdited = updatePlatform($_POST['platformId'],$_POST['platformName']);
         }
     }
@@ -36,7 +36,7 @@
             <form name="edit_platform" action="" method="POST">
                 <div class="mb-3">
                     <label for="platformName" class="form-label">Nombre plataforma</label>
-                    <input id="platformName" name="platformName" type="text" placeholder="Introduce el nombre de la plataforma" class="form-control" required value="<?php if(isset($platformObject)) echo $platformObject->getName(); ?>" />
+                    <input id="platformName" name="platformName" type="text" placeholder="Introduce el nombre de la plataforma" class="form-control" required value="<?php if(isset($platformObject)) echo $platformObject->getName(); else echo 'La plataforma no existe..no pongas IDs raros en la URL...' ?>" />
                     <input type="hidden" name="platformId" value="<?php echo $idPlatform; ?>"/>
                 </div>
                 <input type="submit" value="Editar" class="btn btn-primary" name="editBtn"/>
