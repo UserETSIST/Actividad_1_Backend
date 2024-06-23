@@ -15,7 +15,7 @@ CREATE TABLE Actores (
     Apellido text  NULL,
     FechaNacimiento date  NULL,
     Nacionalidad text  NULL,
-	Activo TINYINT(1) NOT NULL DEFAULT 0,
+	Activo TINYINT(1) NOT NULL DEFAULT 1,
     CONSTRAINT Actores_pk PRIMARY KEY (ID)
 );
 
@@ -27,7 +27,7 @@ CREATE TABLE Directores (
     Apellidos text  NULL,
     FechaNacimiento date  NULL,
     Nacionalidad text  NULL,
-	Activo TINYINT(1) NOT NULL DEFAULT 0,
+	Activo TINYINT(1) NOT NULL DEFAULT 1,
     CONSTRAINT Directores_pk PRIMARY KEY (ID)
 );
 
@@ -36,7 +36,7 @@ CREATE TABLE Idiomas (
     ID BIGINT AUTO_INCREMENT  NOT NULL,
     nombre text  NULL,
     ISOCode text  NULL,
-	Activo TINYINT(1) NOT NULL DEFAULT 0,
+	Activo TINYINT(1) NOT NULL DEFAULT 1,
     CONSTRAINT Idiomas_pk PRIMARY KEY (ID)
 );
 
@@ -44,7 +44,7 @@ CREATE TABLE Idiomas (
 CREATE TABLE Plataformas (
     ID BIGINT AUTO_INCREMENT  NOT NULL,
     Nombre text  NULL,
-	Activo TINYINT(1) NOT NULL DEFAULT 0,
+	Activo TINYINT(1) NOT NULL DEFAULT 1,
     CONSTRAINT Plataformas_pk PRIMARY KEY (ID)
 );
 
@@ -57,7 +57,7 @@ CREATE TABLE Series (
     Actores_ID BIGINT  NOT NULL,
     IdiomasAudio_ID BIGINT NOT NULL,
     IdiomasSubtitulos_ID BIGINT  NOT NULL,
-	Activo TINYINT(1) NOT NULL DEFAULT 0,
+	Activo TINYINT(1) NOT NULL DEFAULT 1,
     CONSTRAINT Series_pk PRIMARY KEY (ID)
 );
 
@@ -69,7 +69,7 @@ CREATE TABLE Comentarios (
     Comentario TEXT NULL,
     Fecha DATE NULL,
     PRIMARY KEY (ID),
-	Activo TINYINT(1) NOT NULL DEFAULT 0,
+	Activo TINYINT(1) NOT NULL DEFAULT 1,
     FOREIGN KEY (Series_ID) REFERENCES Series(ID)
 );
 
