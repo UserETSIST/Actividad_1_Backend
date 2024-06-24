@@ -1,5 +1,7 @@
 <?php
     require_once('../ConfigDB.php');
+    require_once('Idiom.php');
+    require_once('Platform.php');
 
     class Serie
     {
@@ -36,15 +38,15 @@
         }
 
 
-        public static function getItem($platformId) {
+        public static function getItem($serieId) {
             echo "Entro en ". __FUNCTION__;
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
             $itemObject = null;
-            $query = $mysqli->query("SELECT * FROM plataformas WHERE ID = $platformId AND Activo = '1'");
+            $query = $mysqli->query("SELECT * FROM Series WHERE ID = $serieId AND Activo = '1'");
             if($query->rowCount() > 0){
                 foreach ($query as $item) {
-                    $itemObject = new Platform($item['ID'],$item['Nombre'],$item['Activo']);
+                    $itemObject = new Serie($item['ID'],$item['Titulo'],$item['Directores_ID'],$item['Actores_ID'],$item['Plataformas_ID'],$item['IdiomasAudio_ID'],$item['IdiomasSubtitulos_ID'],$item['Activo']);
                     break;                
                 }
             }
@@ -53,58 +55,58 @@
 
 
 
-        public static function store($name) {
+        public static function store($name,$director,$actor,$platform,$audio,$subitulos) {
             echo "Entro en ". __FUNCTION__;
-            $platformCreated = false;
+            $serieCreated = false;
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
-            $insertNuevaPlataforma = true;
+            $insertNuevaSerie = true;
 
-            $nombresPlataformas = $mysqli->query("SELECT Nombre FROM plataformas");
+            $nombresSeries = $mysqli->query("SELECT Titulo FROM series");
             
-            foreach($nombresPlataformas as $nombre) {
+            foreach($nombresSeries as $nombre) {
                 if (strtolower($nombre[0]) === strtolower($name)) {
-                    if ($mysqli -> query("UPDATE plataformas set Activo = '1' WHERE Nombre = '$name'")){
-                        $platformCreated = true;
+                    if ($mysqli -> query("UPDATE series set Activo = '1' WHERE Titulo = '$name'")){
+                        $serieCreated = true;
                     }
-                        $insertNuevaPlataforma = false;
+                        $insertNuevaSerie = false;
                         break;
                         }
             }
 
-            if ($insertNuevaPlataforma) {
-                if ($mysqli -> query("INSERT INTO plataformas (Nombre,Activo) VALUES ('$name',1)")){
-                    $platformCreated = true;
+            if ($insertNuevaSerie) {
+                if ($mysqli -> query("INSERT INTO series (Titulo,Directores_ID,Plataformas_ID,Actores_ID,IdiomasAudio_ID,IdiomasSubtitulos_ID,Activo) VALUES ('$name','$director','$actor','$platform','$audio','$subitulos',1)")){
+                    $serieCreated = true;
                 }
             }    
-            return $platformCreated;
+            return $serieCreated;
         }
 
 
 
 
-        public static function update($platformId,$name) {
+        public static function update($serieId,$name,$director,$actor,$platform,$audio,$subitulos) {
             echo "Entro en ". __FUNCTION__; 
-            $platformUpdated = false;
+            $serieUpdated = false;
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
-            $updateNuevaPlataforma = true;
+            $updateNuevaSerie = true;
 
-            $nombresPlataformas = $mysqli->query("SELECT * FROM plataformas WHERE Activo = '1'");
+            $nombresSeries = $mysqli->query("SELECT * FROM series WHERE Activo = '1'");
             
-            foreach($nombresPlataformas as $nombre) {
-                if (strtolower($nombre['Nombre']) === strtolower($name)) {
-                         $updateNuevaPlataforma = false;
+            foreach($nombresSeries as $nombre) {
+                if (strtolower($nombre['Titulo']) === strtolower($name)) {
+                         $updateNuevaSerie = false;
                          break;
                         }
             }
 
-            if ($updateNuevaPlataforma) {
-                if ($mysqli -> query("UPDATE plataformas set Nombre = '$name' where id = $platformId")){
-                    $platformUpdated = true;
+            if ($updateNuevaSerie) {
+                if ($mysqli -> query("UPDATE series set Titulo = '$name', Directores_ID = '$director', Plataformas_ID  ='$platform', Actores_ID = '$actor', IdiomasAudio_ID = '$audio', IdiomasSubtitulos_ID = '$subitulos' where id = $serieId")){
+                    $serieUpdated = true;
                 }
             }    
-            return $platformUpdated;
+            return $serieUpdated;
         }
 
         public static function delete($serieId) {
@@ -151,12 +153,19 @@
          */ 
         public function getSubitulos()
         {
+            // $mysqliObject = new databaseConnect();
+            // $mysqli = $mysqliObject->getConnection();
+            // $subtitles = $mysqli->query("SELECT Idiomas.Nombre AS subtitle FROM Series JOIN Idiomas ON Series.IdiomasSubtitulos_ID = Idiomas.ID WHERE Series.ID = '$this->id';");
+            // foreach($subtitles as $subtitle){
+            //     return $subtitle['subtitle'];
+            // }
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
-            $subtitles = $mysqli->query("SELECT Idiomas.Nombre AS subitile FROM Series JOIN Idiomas ON Series.IdiomasSubtitulos_ID = Idiomas.ID WHERE Series.ID = '$this->id';");
-            foreach($subtitles as $subtitle){
-                return $subtitle['subitile'];
+            $idiom = $mysqli->query("SELECT Idiomas.Nombre AS nombre, Idiomas.ID AS id, Idiomas.ISOCode as iso FROM Series JOIN Idiomas ON Series.IdiomasSubtitulos_ID = Idiomas.ID WHERE Series.ID = '$this->id';");
+            foreach($idiom as $subtitule) {
+                $subtitlesObject = new Idiom($subtitule['id'],$subtitule['nombre'], $subtitule['iso']);
             }
+            return $subtitlesObject;
         }
 
         /**
@@ -176,12 +185,21 @@
          */ 
         public function getAudio()
         {
+            // $mysqliObject = new databaseConnect();
+            // $mysqli = $mysqliObject->getConnection();
+            // $audios = $mysqli->query("SELECT Idiomas.Nombre AS audio FROM Series JOIN Idiomas ON Series.IdiomasAudio_ID = Idiomas.ID WHERE Series.ID = '$this->id';");
+            // foreach($audios as $audio){
+            //     return $audio['audio'];
+            // }
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
-            $audios = $mysqli->query("SELECT Idiomas.Nombre AS audio FROM Series JOIN Idiomas ON Series.IdiomasAudio_ID = Idiomas.ID WHERE Series.ID = '$this->id';");
-            foreach($audios as $audio){
-                return $audio['audio'];
+            $idioms = $mysqli->query("SELECT Idiomas.Nombre AS nombre, Idiomas.ID AS id, Idiomas.ISOCode as iso FROM Series JOIN Idiomas ON Series.IdiomasSubtitulos_ID = Idiomas.ID WHERE Series.ID = '$this->id';");
+            foreach($idioms as $idioma) {
+                $idiomsObject = new Idiom($idioma['id'],$idioma['nombre'], $idioma['iso']);
             }
+            return $idiomsObject;
+
+
         }
 
         /**
@@ -271,12 +289,21 @@
          */ 
         public function getPlatform()
         {
+            // $mysqliObject = new databaseConnect();
+            // $mysqli = $mysqliObject->getConnection();
+            // $nombrePlataforma = $mysqli->query("SELECT Plataformas.Nombre AS plataforma_nombre FROM Series JOIN Plataformas ON Series.Plataformas_ID = Plataformas.ID WHERE Series.ID = '$this->id';");
+            // foreach($nombrePlataforma as $plataforma){
+            //     return $plataforma['plataforma_nombre'];
+            // }
+
+
             $mysqliObject = new databaseConnect();
             $mysqli = $mysqliObject->getConnection();
-            $nombrePlataforma = $mysqli->query("SELECT Plataformas.Nombre AS plataforma_nombre FROM Series JOIN Plataformas ON Series.Plataformas_ID = Plataformas.ID WHERE Series.ID = '$this->id';");
-            foreach($nombrePlataforma as $plataforma){
-                return $plataforma['plataforma_nombre'];
+            $platforms = $mysqli->query("SELECT Plataformas.Nombre AS nombre, Plataformas.ID AS id FROM Series JOIN Plataformas ON Series.Plataformas_ID = Plataformas.ID WHERE Series.ID = '$this->id';");
+            foreach($platforms as $platform) {
+                $platformObject = new Platform($platform['id'],$platform['nombre']);
             }
+            return $platformObject;
         }
 
         /**

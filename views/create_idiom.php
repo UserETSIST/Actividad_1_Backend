@@ -43,6 +43,7 @@
                 </div>
 
                 <input type="submit" value="Crear" class="btn btn-primary" name="createBtn"/>
+                <a class="btn btn-danger" href="list_idioms.php">Cancelar</a>
             </form>
         </div>
     </div> 

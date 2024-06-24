@@ -6,26 +6,26 @@
         return Serie::getAll();
     }
 
-    function storeSerie($idiom,$iso) {
+    function storeSerie($title,$director,$actor,$platform,$audio,$subitulos) {
         echo "Entro en ". __FUNCTION__;
-        if (!isset($idiom) || trim($idiom) === '' || strlen(trim($idiom)) <= 2 || !isset($iso) || trim($iso) === '' || strlen(trim($iso)) <= 1) {
+        if (!isset($title) || trim($title) === '' || strlen(trim($title)) <= 2 ) {
             return null;
         }
-        else return Serie::store($idiom,$iso);
+        else return Serie::store($title,$director,$actor,$platform,$audio,$subitulos);
     }
 
-    function updateSerie($idiomID,$newIdiom,$newISO) {
+    function updateSerie($serieID,$newTitle,$director,$actor,$platform,$audio,$subitulos) {
         echo "Entro en ". __FUNCTION__;
-        if (!isset($newIdiom) || strlen(trim($newIdiom)) <= 2 ||!isset($newISO) || strlen(trim($newISO)) <= 1 || !isset($idiomID) || !is_numeric($idiomID)) {
+        if (!isset($newTitle) || strlen(trim($newTitle)) <= 2 || !isset($serieID) || !is_numeric($serieID)) {
             return null;
         }
-        return Serie::update($idiomID,$newIdiom, $newISO);
+        return Serie::update($serieID,$newTitle,$director,$actor,$platform,$audio,$subitulos);
     }
 
-    function getSerie($idiomID) {
+    function getSerie($serieID) {
         echo "Entro en ". __FUNCTION__;
-        if(is_numeric($idiomID)){
-            return Serie::getItem($idiomID);
+        if(is_numeric($serieID)){
+            return Serie::getItem($serieID);
         }
         return null;
     }

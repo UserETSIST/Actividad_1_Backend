@@ -47,9 +47,9 @@
                                 <td><?php echo $serie->getTitulo(); ?></td>
                                 <td><?php echo $serie->getDirector(); ?></td>
                                 <td><?php echo $serie->getActor(); ?></td>
-                                <td><?php echo $serie->getPlatform(); ?></td>
-                                <td><?php echo $serie->getAudio(); ?></td>
-                                <td><?php echo $serie->getSubitulos(); ?></td>
+                                <td><?php echo $serie->getPlatform()->getName(); ?></td>
+                                <td><?php echo $serie->getAudio()->getName(); ?></td>
+                                <td><?php echo $serie->getSubitulos()->getName(); ?></td>
                                 <td>
                                     <div class="btn-group" role="group" aria-label="Basic example">
                                         <a class="btn btn-success" href="edit_serie.php?id=<?php echo $serie->getId(); ?>">Editar</a>

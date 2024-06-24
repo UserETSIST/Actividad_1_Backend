@@ -38,6 +38,7 @@
                     <input id="platformName" name="platformName" type="text" placeholder="Introduce el nombre de la plataforma" class="form-control" required />
                 </div>
                 <input type="submit" value="Crear" class="btn btn-primary" name="createBtn"/>
+                <a class="btn btn-danger" href="list_platforms.php">Cancelar</a>
             </form>
         </div>
     </div> 
