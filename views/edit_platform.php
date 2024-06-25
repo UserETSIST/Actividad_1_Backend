@@ -50,7 +50,7 @@
                     ?>
                     <div class="row">
                         <div class="alert alert-success" role="alert">
-                            Plataforma creada correctamente.<br><a href="list_platforms.php">Volver al listado de plataformas.</a>
+                            Plataforma editada correctamente.<br><a href="list_platforms.php">Volver al listado de plataformas.</a>
                         </div>
                     </div>
                     <?php
@@ -58,7 +58,7 @@
                     ?>
                     <div class="row">
                         <div class="alert alert-danger" role="alert">
-                            La plataforma no se ha creado correctamente.<br><a href="edit_platform.php?id=<?php echo $idPlatform; ?>">Volver a intentarlo.</a>
+                            La plataforma no se ha editado correctamente.<br><a href="edit_platform.php?id=<?php echo $idPlatform; ?>">Volver a intentarlo.</a>
                         </div>
                     </div>
                     <?php
